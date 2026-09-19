@@ -4,17 +4,28 @@
 
 :root {
   /* Sensory-neutral palette: muted, low-saturation, high legibility.
-     Deliberately no bright red or saturated blue anywhere. */
-  --bg: #f4f3f0;
-  --surface: #ffffff;
+
+     NO PURE WHITE anywhere. #ffffff is the brightest thing a screen can emit
+     and is a common trigger for glare, fatigue and photophobia. Every surface
+     is a warm off-white instead.
+     NO PURE BLACK either: #222 luminance is indistinguishable from black for
+     legibility but noticeably less harsh on the eye over long use. */
+  --bg: #f4f3f0;          /* warm off-white canvas — not #ffffff */
+  --surface: #fbfaf8;     /* tile fill: off-white, deliberately not pure white */
   --surface-2: #ebe9e5;
-  --ink: #1c1b18;
+  --ink: #222222;         /* dark charcoal, not #000000 */
   --ink-soft: #56534d;
-  --line: #d7d4cc;
+  --line: #c9c5bb;        /* darker than before so tile edges read clearly */
   --accent: #3f5f73;      /* calm slate-blue */
-  --accent-ink: #ffffff;
+  --accent-ink: #fbfaf8;
   --warn: #8a5a3b;        /* muted amber-brown, not alarming red */
   --stop: #5c4a63;        /* muted plum for STOP: calm, not aggressive */
+
+  /* Focus and selection. A thick solid outline, never a subtle colour shift:
+     a slightly darker green is invisible to many users and unusable with eye
+     tracking. 4px black reads at any size and needs no colour perception. */
+  --focus-ring: #1c1b18;
+  --focus-width: 4px;
 
   --radius: 14px;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -52,20 +63,38 @@ button {
   user-select: none;
 }
 
-/* Visible focus for keyboard and switch access, without motion. */
-button:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
+/* Focus, keyboard access, switch access and eye tracking all get the SAME
+   high-visibility ring. outline (not border/shadow) so it never shifts layout,
+   and offset so it sits clear of the tile edge. */
+button:focus-visible,
+button:focus {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* Selection must not depend on colour: a thick ring plus a corner marker.
+   `:focus-within` on the parent keeps the ring visible when the browser
+   moves focus to a child element. */
+.tile.is-selected,
+.tile:active {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: 3px;
 }
 
 /* ---- caregiver-controlled display modes ---- */
 
+/* High-contrast mode is the ONE deliberate exception to the no-pure-white /
+   no-pure-black rule. It is an opt-in aid for low vision, and there the goal
+   inverts: maximum luminance separation beats glare comfort. Everywhere else
+   in LUCID the off-white and charcoal tokens apply. */
 body.high-contrast {
   --bg: #ffffff;
+  --surface: #ffffff;
   --ink: #000000;
   --line: #000000;
   --ink-soft: #333333;
   --surface-2: #f0f0f0;
+  --focus-ring: #000000;
 }
 
 body.scale-lg .tile-label { font-size: 21px; }

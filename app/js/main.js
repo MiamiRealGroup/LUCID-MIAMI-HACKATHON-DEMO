@@ -1,5 +1,5 @@
 import { initContextBar, onContextChange } from './context.js';
-import { initCaregiver } from './caregiver.js';
+import { initCaregiver, applyColourMode } from './caregiver.js';
 import { setPhrases, setActiveContext } from './board.js';
 import { speak, stop } from './speak.js';
 
@@ -12,6 +12,24 @@ function updateOffline() {
 
 function lastText() {
   return document.getElementById('speech-text').textContent;
+}
+
+// A long-press entry point is useless if nobody knows it exists. State it
+// once, on the first visit only, then never show it again — a person using
+// this board should not be given anything new to read twice.
+function showCaregiverHint() {
+  const el = document.getElementById('caregiver-hint');
+  if (!el) return;
+  try {
+    if (localStorage.getItem('lucid-hint-seen') === '1') return;
+    localStorage.setItem('lucid-hint-seen', '1');
+  } catch {
+    // Storage unavailable (private mode): skip the hint rather than risk
+    // showing it on every single load.
+    return;
+  }
+  el.textContent = 'Caregivers: press and hold Repeat or Stop for 2 seconds to open settings.';
+  el.hidden = false;
 }
 
 async function loadPhrases() {
@@ -37,7 +55,9 @@ async function boot() {
   onContextChange((id) => setActiveContext(id));
   initContextBar();
 
+  showCaregiverHint();
   initCaregiver();
+  applyColourMode();
 
   const repeat = document.getElementById('btn-repeat');
   const stopBtn = document.getElementById('btn-stop');

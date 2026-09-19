@@ -33,6 +33,56 @@ without internet.
 - **Universal by simplicity, not by options**: one simple core that adapts via
   voice profile + vocabulary set, not a settings-heavy app.
 
+## Accessibility & contrast rules (product requirement)
+
+- **No pure white backgrounds.** `#ffffff` is the brightest thing a screen can
+  emit and a common trigger for glare, photophobia and fatigue. The canvas is a
+  warm off-white (`#f4f3f0`) and tiles are `#fbfaf8`.
+- **No pure black text.** Charcoal `#222222` reads the same but is less harsh
+  over long use.
+- **Focus / selection must never rely on a subtle colour shift.** A slightly
+  darker green is invisible to many users and unusable with eye tracking. Every
+  focus, hover, switch-access and tap-selection state uses a thick (4px) solid
+  outline via `--focus-ring` / `--focus-width`. Selection class is `is-selected`.
+- **WCAG AA minimum (4.5:1) on every text/background pairing.** Because the
+  Fitzgerald palette is pastel, text inside those tiles is always dark charcoal.
+- **Never rely on colour alone.** Each vocabulary category carries a distinct
+  shape glyph as well as a colour, so meaning survives colour vision deficiency
+  and greyscale.
+- **One documented exception:** `body.high-contrast` deliberately uses pure
+  white/black. For low vision the goal inverts — luminance separation beats
+  glare comfort. It is opt-in and documented in the CSS.
+
+## Colour vocabulary — Modified Fitzgerald Key (opt-in)
+
+`body.fitzgerald` enables the standard AAC convention: yellow = people,
+green = verbs, blue = adjectives, orange = nouns, purple = social words.
+
+**Off by default.** LUCID's own principle is a sensory-neutral palette and the
+Fitzgerald set is deliberately high-salience — the opposite goal. It exists for
+classrooms and SLPs who already use the convention, toggled by a caregiver
+(persisted as `lucid-colour` in localStorage).
+
+Urgency always wins: `tile-urgent` / `tile-stop` keep their own colours even in
+colour mode, because category must never override "a human is needed now".
+
+Measured contrast (verified by `_lucid_verify/verify-contrast.mjs`):
+people 11.29:1, verb 9.33:1, adjective 8.84:1, noun 9.62:1, social 8.21:1.
+Urgent 5.58:1, STOP 7.70:1, body text 14.34:1.
+
+## Verification harness
+
+There is no Node on this machine, so tests run under the Node runtime bundled
+inside an installed Electron app, via `ELECTRON_RUN_AS_NODE=1`.
+
+Run everything: `C:\Users\ZIRAK\_lucid_verify\run-all.bat` — 5 suites
+(route contracts, UI contracts, layout+colour, WCAG contrast, full harness).
+
+Also useful:
+- `run-diff.bat` — local vs GitHub, compared by git blob SHA (exact, not sizes)
+- `check-live.bat` — reads the deployed bytes and reports whether fixes are live
+- `run-measure.bat` — injects a measuring script into a served copy of the app
+
 ## Project name & identity
 
 - **LUCID** — "Clear, pure, and piercing through the fog of an overwhelming environment."

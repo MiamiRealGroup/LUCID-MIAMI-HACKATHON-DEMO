@@ -7,6 +7,33 @@ import { contexts } from './context.js';
 
 let phrases = [];
 
+// Colour vocabulary is a caregiver preference, persisted locally because it
+// is a display setting for this device, not shared account state.
+const COLOUR_KEY = 'lucid-colour';
+
+export function colourModeOn() {
+  try { return localStorage.getItem(COLOUR_KEY) === '1'; } catch { return false; }
+}
+
+// `<body>` is not guaranteed to exist when this runs, so every DOM touch is
+// guarded. The preference is still recorded either way.
+function setBodyClass(on) {
+  const body = document && document.body;
+  if (!body || !body.classList) return false;
+  body.classList.toggle('fitzgerald', on);
+  return true;
+}
+
+export function setColourMode(on) {
+  try { localStorage.setItem(COLOUR_KEY, on ? '1' : '0'); } catch {}
+  setBodyClass(on);
+}
+
+// Applied at boot so the choice survives a reload.
+export function applyColourMode() {
+  setBodyClass(colourModeOn());
+}
+
 export function initCaregiver() {
   const panel = document.getElementById('caregiver');
 
@@ -75,6 +102,8 @@ async function render() {
       <legend>Display</legend>
       <label><input type="checkbox" id="opt-contrast" /> High contrast</label>
       <label><input type="checkbox" id="opt-haptics" checked /> Vibrate on tap (if available)</label>
+      <label><input type="checkbox" id="opt-colour" /> Colour vocabulary (Fitzgerald Key)</label>
+      <p class="statusline">Colours words by grammar: yellow people, green verbs, blue describing words, orange nouns, purple social words. Off keeps the board sensory neutral.</p>
     </fieldset>
 
     <button class="btn-close" id="caregiver-close">Close</button>
@@ -92,9 +121,13 @@ async function render() {
   panel.querySelector('#opt-haptics').addEventListener('change', (e) => {
     localStorage.setItem('lucid-haptics', e.target.checked ? '1' : '0');
   });
+  panel.querySelector('#opt-colour').addEventListener('change', (e) => {
+    setColourMode(e.target.checked);
+  });
 
   const savedHaptics = localStorage.getItem('lucid-haptics') !== '0';
   panel.querySelector('#opt-haptics').checked = savedHaptics;
+  panel.querySelector('#opt-colour').checked = colourModeOn();
 }
 
 async function renderVoices(profile) {

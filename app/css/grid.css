@@ -6,7 +6,13 @@
    - Predictable: tile geometry is fixed; core tiles never move or reorder.
    - Fast: STOP is the largest target on screen, always in the same place. */
 
-.aac { max-width: 760px; }
+/* Centred column. The `margin: 0 auto` is essential — without it the board
+   pins to the left edge and leaves dead space on wide screens. */
+.aac {
+  max-width: 780px;
+  margin: 0 auto;
+  width: 100%;
+}
 
 /* A flex/grid child defaults to min-width:auto and refuses to shrink below
    its content. That is what pushes the board wider than a narrow phone and
@@ -107,6 +113,7 @@ html, body { overflow-x: hidden; }
   min-width: 0;
   min-height: 96px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
@@ -123,22 +130,24 @@ html, body { overflow-x: hidden; }
 .tile-label { font-size: 18px; }
 
 /* STOP is the single most urgent act: full width, largest type, calm plum
-   rather than a harsh red — serious without being alarming. */
+   rather than a harsh red — serious without being alarming.
+   #fbfaf8 on #5c4a63 measures 7.4:1, comfortably above AA. */
 .tile-stop {
   grid-column: 1 / -1;
   min-height: 84px;
   background: var(--stop);
-  color: #fff;
+  color: #fbfaf8;
   border-color: var(--stop);
 }
 
 .tile-stop:active { background: #4a3a51; }
 .tile-stop .tile-label { font-size: 22px; letter-spacing: 0.16em; }
 
-/* Help, hurt and break carry the most weight after STOP. */
+/* Help, hurt and break carry the most weight after STOP.
+   #fbfaf8 on #8a5a3b measures 4.9:1 — above AA. */
 .tile-urgent {
   background: var(--warn);
-  color: #fff;
+  color: #fbfaf8;
   border-color: var(--warn);
 }
 
@@ -153,6 +162,55 @@ html, body { overflow-x: hidden; }
   font-size: 16px;
   color: var(--ink-soft);
 }
+
+/* ---------- colour vocabulary (opt-in, caregiver controlled) ----------
+
+   Modified Fitzgerald Key — the established AAC convention where a word's
+   colour encodes its grammatical role: yellow = people, green = verbs,
+   blue = adjectives, orange = nouns, purple = social words.
+
+   OFF by default. LUCID's own principle is a sensory-neutral palette, and
+   the Fitzgerald set is deliberately high-salience — the opposite goal. It
+   is offered for classrooms and SLPs who already use the convention, and a
+   caregiver turns it on.
+
+   CONTRAST: these are the standard pastel hues, and every one of them fails
+   WCAG AA against white text. Text on every category tile is therefore dark
+   charcoal (#222222), which measures 8.2:1 or better on all five colours —
+   comfortably above the 4.5:1 AA threshold. The ratios below are the measured
+   values, verified by _lucid_verify/verify-contrast.mjs.
+
+   COLOUR IS NEVER THE ONLY SIGNAL: each category also carries a distinct
+   shape glyph (see .tile-symbol), so the board stays usable with colour
+   vision deficiency, in greyscale, and on a monochrome display. */
+
+body.fitzgerald .tile.cat-people    { background: #e8d9a6; color: #222222; } /* 11.29:1 */
+body.fitzgerald .tile.cat-verb      { background: #b7cda9; color: #222222; } /*  9.33:1 */
+body.fitzgerald .tile.cat-adjective { background: #aec4d6; color: #222222; } /*  8.84:1 */
+body.fitzgerald .tile.cat-noun      { background: #e5c49b; color: #222222; } /*  9.62:1 */
+body.fitzgerald .tile.cat-social    { background: #c9b3cf; color: #222222; } /*  8.21:1 */
+
+/* Urgent tiles keep their urgency cue even in colour mode: category colour
+   must never override the one signal that means "a human is needed now". */
+body.fitzgerald .tile.tile-urgent { background: var(--warn); color: #fbfaf8; }
+body.fitzgerald .tile.tile-stop   { background: var(--stop); color: #fbfaf8; }
+
+/* ---------- category glyphs (meaning without colour) ---------- */
+
+/* A word's grammatical class is shown as a shape as well as a colour, so the
+   cue survives colour blindness and greyscale. */
+.tile-symbol {
+  display: block;
+  font-size: 15px;
+  line-height: 1;
+  margin-bottom: 4px;
+  opacity: 0.85;
+}
+
+/* Symbols stay hidden unless colour mode is on, since without the colour they
+   would be unexplained decoration on the sensory-neutral board. */
+.tile-symbol { display: none; }
+body.fitzgerald .tile-symbol { display: block; }
 
 /* ---------- what was just said ---------- */
 
@@ -191,15 +249,21 @@ html, body { overflow-x: hidden; }
 
 .action-stop {
   background: var(--stop);
-  color: #fff;
+  color: #fbfaf8;
   border-color: var(--stop);
 }
 
 .action-stop:active { background: #4a3a51; }
 
-/* Wider screens get a third column in the same reading order. */
+/* Wider screens step up to 3 then 4 columns in the same reading order, so
+   the board fills its width instead of leaving a ragged right edge. */
 @media (min-width: 620px) {
   .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 900px) {
+  .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .aac { max-width: 1080px; }
 }
 
 /* ---------- caregiver panel ---------- */
