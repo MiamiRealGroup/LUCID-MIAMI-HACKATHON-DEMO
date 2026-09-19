@@ -1,0 +1,33 @@
+[
+  { "id": "stop", "text": "STOP", "context": "core", "alert": false },
+  { "id": "help", "text": "I NEED HELP", "context": "core", "alert": true },
+  { "id": "bathroom", "text": "BATHROOM", "context": "core", "alert": false },
+  { "id": "break", "text": "I NEED A BREAK", "context": "core", "alert": false },
+  { "id": "too-loud", "text": "TOO LOUD", "context": "core", "alert": false },
+  { "id": "too-bright", "text": "TOO BRIGHT", "context": "core", "alert": false },
+  { "id": "hurt", "text": "I'M HURT", "context": "core", "alert": true },
+  { "id": "hungry", "text": "I'M HUNGRY", "context": "core", "alert": false },
+  { "id": "thirsty", "text": "I'M THIRSTY", "context": "core", "alert": false },
+  { "id": "mad", "text": "I'M MAD", "context": "core", "alert": false },
+  { "id": "frustrated", "text": "I'M FRUSTRATED", "context": "core", "alert": false },
+  { "id": "happy", "text": "I'M HAPPY", "context": "core", "alert": false },
+  { "id": "yes", "text": "YES", "context": "core", "alert": false },
+  { "id": "no", "text": "NO", "context": "core", "alert": false },
+
+  { "id": "school-quiet", "text": "I NEED QUIET", "context": "school", "alert": false },
+  { "id": "school-done", "text": "I'M DONE", "context": "school", "alert": false },
+  { "id": "school-paper", "text": "I NEED PAPER", "context": "school", "alert": false },
+  { "id": "school-teacher", "text": "I NEED MY TEACHER", "context": "school", "alert": false },
+
+  { "id": "store-checkout", "text": "I'M READY TO CHECK OUT", "context": "store", "alert": false },
+  { "id": "store-cart", "text": "I NEED A CART", "context": "store", "alert": false },
+  { "id": "store-find", "text": "I CAN'T FIND IT", "context": "store", "alert": false },
+
+  { "id": "restroom-paper", "text": "I NEED TOILET PAPER", "context": "restroom", "alert": false },
+  { "id": "restroom-soap", "text": "I NEED SOAP", "context": "restroom", "alert": false },
+  { "id": "restroom-help", "text": "PLEASE COME IN", "context": "restroom", "alert": true },
+
+  { "id": "home-tv", "text": "I WANT THE TV", "context": "home", "alert": false },
+  { "id": "home-blanket", "text": "I NEED MY BLANKET", "context": "home", "alert": false },
+  { "id": "home-hug", "text": "I NEED A HUG", "context": "home", "alert": false }
+]

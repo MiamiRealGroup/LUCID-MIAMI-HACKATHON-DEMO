@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f4f1" />
+  <meta name="description" content="LUCID — Sensory Neutral AAC. Perfect clarity in a loud world." />
+  <title>LUCID</title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/grid.css" />
+</head>
+<body>
+  <!-- The child-facing surface is the default and only primary view. -->
+  <main id="aac" class="aac" aria-label="LUCID communication board">
+    <header class="statusbar">
+      <span id="context-label" class="statusbar-context">Core</span>
+      <span id="offline-indicator" class="statusbar-offline" hidden>Offline · phrases saved</span>
+    </header>
+
+    <section id="core-grid" class="grid" aria-label="Core phrases"></section>
+
+    <nav id="context-bar" class="contextbar" aria-label="Places"></nav>
+
+    <section id="speech-strip" class="speechstrip" aria-live="polite">
+      <span id="speech-text" class="speechstrip-text"></span>
+    </section>
+
+    <footer class="actions">
+      <button id="btn-repeat" class="action" type="button" aria-label="Repeat">Repeat</button>
+      <button id="btn-stop" class="action action-stop" type="button" aria-label="Stop speech">Stop</button>
+    </footer>
+  </main>
+
+  <!-- Caregiver panel: reached via a deliberate long-press on the footer
+       area, never surfaced to the child by accident. -->
+  <section id="caregiver" class="caregiver" hidden aria-label="Caregiver settings"></section>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

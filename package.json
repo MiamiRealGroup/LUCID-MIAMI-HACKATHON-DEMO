@@ -1,0 +1,18 @@
+{
+  "name": "lucid-aac",
+  "version": "0.1.0",
+  "description": "LUCID — Sensory Neutral Augmentative & Alternative Communication. Perfect clarity in a loud world.",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

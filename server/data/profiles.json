@@ -1,0 +1,24 @@
+{
+  "voice": {
+    "id": "",
+    "name": "Default (until caregiver picks)",
+    "stability": 0.5,
+    "similarityBoost": 0.75
+  },
+  "contexts": [
+    { "id": "core", "label": "Core", "always": true },
+    { "id": "home", "label": "Home" },
+    { "id": "school", "label": "School" },
+    { "id": "store", "label": "Store" },
+    { "id": "restroom", "label": "Restroom" }
+  ],
+  "alert": {
+    "channel": "log",
+    "enabled": false
+  },
+  "display": {
+    "textScale": 1,
+    "haptics": true,
+    "highContrast": false
+  }
+}

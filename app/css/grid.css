@@ -1,0 +1,134 @@
+/* Fixed button geometry. Positions never reflow, so a button is always
+   where the person last saw it. */
+
+.grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 8px 16px;
+  overflow-y: auto;
+  align-content: start;
+}
+
+/* Core grid is the primary surface; keep tiles generous and touch-sized. */
+.tile {
+  min-height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+}
+
+.tile-label { font-size: 17px; }
+
+/* Urgent/alert tiles get a subtle, calm emphasis — never flashing. */
+.tile-urgent { background: var(--warn); color: #fff; border-color: var(--warn); }
+.tile-urgent:active { background: #7a4e31; }
+
+.tile-stop { background: var(--stop); color: #fff; border-color: var(--stop); }
+.tile-stop:active { background: #4a3a51; }
+
+.tile-muted { opacity: 0.55; }
+
+.contextbar {
+  display: flex;
+  gap: 8px;
+  padding: 4px 16px;
+  overflow-x: auto;
+}
+
+.contextchip {
+  white-space: nowrap;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 999px;
+}
+
+.contextchip.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+/* Caregiver panel styles live here to keep base.css about the child view. */
+.caregiver {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  overflow-y: auto;
+  padding: 24px 20px 48px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.caregiver h1 { font-size: 22px; margin: 0 0 4px; }
+.caregiver h2 { font-size: 16px; margin: 24px 0 8px; color: var(--ink-soft); }
+.caregiver .lead { color: var(--ink-soft); margin: 0 0 20px; font-size: 14px; }
+
+.caregiver fieldset {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 0 0 16px;
+}
+
+.caregiver label { display: block; font-size: 14px; margin: 12px 0 4px; }
+.caregiver select,
+.caregiver input[type="text"],
+.caregiver input[type="range"] {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.caregiver .row { display: flex; gap: 8px; align-items: center; }
+.caregiver .row button { flex: 0 0 auto; padding: 10px 14px; }
+
+.caregiver button.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.caregiver .btn-close {
+  width: 100%;
+  min-height: 56px;
+  margin-top: 8px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.caregiver .statusline {
+  font-size: 13px;
+  color: var(--ink-soft);
+  min-height: 18px;
+  margin-top: 4px;
+}
+
+.caregiver .phrase-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+}
+
+.caregiver .phrase-row .ctx { color: var(--ink-soft); font-size: 12px; }
+.caregiver .phrase-row .badge { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); }
+.caregiver .phrase-row .badge.cached { background: #e3ede4; color: #2f5d35; }
+.caregiver .phrase-row .badge.pending { background: #efe7d8; color: #7a5a1f; }
