@@ -3,38 +3,48 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f5f4f1" />
+  <meta name="theme-color" content="#f4f3f0" />
   <meta name="description" content="LUCID — Sensory Neutral AAC. Perfect clarity in a loud world." />
   <title>LUCID</title>
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/css/base.css" />
-  <link rel="stylesheet" href="/css/grid.css" />
+  <!-- Versioned so the service worker and HTTP cache cannot serve stale CSS
+       after a deploy. Bump alongside CACHE in sw.js. -->
+  <link rel="stylesheet" href="/css/base.css?v=3" />
+  <link rel="stylesheet" href="/css/grid.css?v=3" />
 </head>
 <body>
-  <!-- The child-facing surface is the default and only primary view. -->
+  <!-- The child-facing surface is the default and only primary view.
+       Order is deliberate: choose the place, see the buttons, see what was
+       said, then Repeat or Stop. Core buttons never move. -->
   <main id="aac" class="aac" aria-label="LUCID communication board">
     <header class="statusbar">
+      <span class="brand">LUCID</span>
       <span id="context-label" class="statusbar-context">Core</span>
-      <span id="offline-indicator" class="statusbar-offline" hidden>Offline · phrases saved</span>
+      <span id="offline-indicator" class="statusbar-offline" hidden>Offline · saved</span>
     </header>
-
-    <section id="core-grid" class="grid" aria-label="Core phrases"></section>
 
     <nav id="context-bar" class="contextbar" aria-label="Places"></nav>
 
-    <section id="speech-strip" class="speechstrip" aria-live="polite">
+    <!-- Shown once, on the very first visit only, so a caregiver can actually
+         find the settings panel. Never shown to the person using the board
+         again after that. -->
+    <p id="caregiver-hint" class="hint" hidden></p>
+
+    <section id="core-grid" class="grid" aria-label="Phrases"></section>
+
+    <section class="speechstrip" aria-live="polite" aria-atomic="true">
       <span id="speech-text" class="speechstrip-text"></span>
     </section>
 
     <footer class="actions">
-      <button id="btn-repeat" class="action" type="button" aria-label="Repeat">Repeat</button>
-      <button id="btn-stop" class="action action-stop" type="button" aria-label="Stop speech">Stop</button>
+      <button id="btn-repeat" class="action" type="button">Repeat</button>
+      <button id="btn-stop" class="action action-stop" type="button">Stop</button>
     </footer>
   </main>
 
-  <!-- Caregiver panel: reached via a deliberate long-press on the footer
-       area, never surfaced to the child by accident. -->
+  <!-- Caregiver panel: reached via a deliberate long-press on the footer,
+       never surfaced to the child by accident. -->
   <section id="caregiver" class="caregiver" hidden aria-label="Caregiver settings"></section>
 
   <script type="module" src="/js/main.js"></script>

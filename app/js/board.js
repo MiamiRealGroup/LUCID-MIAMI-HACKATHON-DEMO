@@ -17,7 +17,8 @@ function tileFor(phrase) {
   btn.className = 'tile';
   if (phrase.id === 'stop') btn.classList.add('tile-stop');
   else if (isUrgent(phrase.id)) btn.classList.add('tile-urgent');
-  if (phrase.status !== 'cached') btn.classList.add('tile-muted');
+  // Deliberately NOT styled by cache status: appearance must not change with
+  // network or sync state. Cache state is shown in the caregiver panel only.
 
   const label = document.createElement('span');
   label.className = 'tile-label';
@@ -37,7 +38,9 @@ function tileFor(phrase) {
 }
 
 export function setPhrases(list) {
-  phrases = list;
+  // Guard against a malformed payload: an empty board is worse than a
+  // stale one, and a non-array would throw inside render().
+  phrases = Array.isArray(list) ? list : [];
   render();
 }
 

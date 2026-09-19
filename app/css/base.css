@@ -1,18 +1,22 @@
+/* LUCID design tokens and reset.
+   base.css owns ONLY tokens and element defaults — layout lives in grid.css.
+   Keeping them separate is what stops the two files fighting each other. */
+
 :root {
-  /* Sensory-neutral palette: muted, high contrast, no saturated flash. */
-  --bg: #f5f4f1;
+  /* Sensory-neutral palette: muted, low-saturation, high legibility.
+     Deliberately no bright red or saturated blue anywhere. */
+  --bg: #f4f3f0;
   --surface: #ffffff;
-  --surface-2: #ecebe7;
-  --ink: #1f1e1b;
-  --ink-soft: #55534e;
-  --line: #d8d6cf;
+  --surface-2: #ebe9e5;
+  --ink: #1c1b18;
+  --ink-soft: #56534d;
+  --line: #d7d4cc;
   --accent: #3f5f73;      /* calm slate-blue */
   --accent-ink: #ffffff;
   --warn: #8a5a3b;        /* muted amber-brown, not alarming red */
-  --stop: #5c4a63;        /* muted plum for STOP, calm not aggressive */
+  --stop: #5c4a63;        /* muted plum for STOP: calm, not aggressive */
 
   --radius: 14px;
-  --tap-size: 64px;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -29,7 +33,8 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Motion: none by default. Predictability over delight. */
+/* Motion: none, anywhere. Predictability over delight — a moving element is
+   a distraction for the people this is built for. */
 *, *::before, *::after {
   transition: none !important;
   animation: none !important;
@@ -47,78 +52,21 @@ button {
   user-select: none;
 }
 
+/* Visible focus for keyboard and switch access, without motion. */
 button:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* A tap gives gentle, instant feedback via state change only — no motion. */
-button:active {
-  background: var(--surface-2);
-}
+/* ---- caregiver-controlled display modes ---- */
 
-.aac {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right)
-           env(safe-area-inset-bottom) env(safe-area-inset-left);
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.statusbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px 4px;
-  font-size: 14px;
-  color: var(--ink-soft);
-}
-
-.statusbar-context { font-weight: 600; letter-spacing: 0.02em; }
-.statusbar-offline { color: var(--warn); font-size: 13px; }
-
-.speechstrip {
-  min-height: 52px;
-  margin: 8px 16px;
-  padding: 12px 16px;
-  background: var(--surface-2);
-  border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-}
-
-.speechstrip-text {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-}
-
-.actions {
-  display: flex;
-  gap: 12px;
-  padding: 8px 16px calc(12px + env(safe-area-inset-bottom));
-}
-
-.action {
-  flex: 1;
-  min-height: 56px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.action-stop { background: var(--stop); color: #fff; border-color: var(--stop); }
-.action-stop:active { background: #4a3a51; }
-
-/* High-contrast mode toggle from caregiver panel */
 body.high-contrast {
   --bg: #ffffff;
   --ink: #000000;
   --line: #000000;
+  --ink-soft: #333333;
   --surface-2: #f0f0f0;
 }
 
-/* Text scale variants */
 body.scale-lg .tile-label { font-size: 21px; }
 body.scale-xl .tile-label { font-size: 25px; }

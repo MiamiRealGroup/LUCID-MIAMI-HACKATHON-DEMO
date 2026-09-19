@@ -3,7 +3,7 @@
 // accident. Behind the panel the child view is untouched.
 
 import { setPhrases } from './board.js';
-import { contexts, setContext } from './context.js';
+import { contexts } from './context.js';
 
 let phrases = [];
 
@@ -152,15 +152,20 @@ async function addPhrase() {
 async function prepareAll() {
   const status = document.querySelector('#phrase-status');
   status.textContent = 'Generating…';
-  const res = await fetchJson('/api/prepare', { method: 'POST' });
-  const ok = res.results.filter((r) => r.status === 'cached').length;
-  status.textContent = `${ok}/${res.results.length} phrases cached.`;
-  await refreshPhrases();
+  try {
+    const res = await fetchJson('/api/prepare', { method: 'POST' });
+    const ok = res.results.filter((r) => r.status === 'cached').length;
+    status.textContent = `${ok}/${res.results.length} phrases cached.`;
+    await refreshPhrases();
+  } catch (err) {
+    // Most often a 503: the server has no ELEVENLABS_API_KEY.
+    status.textContent = `Not generated: ${err.message}`;
+  }
 }
 
 async function refreshPhrases() {
-  const manifest = await fetchJson('/api/phrases');
-  phrases = manifest.phrases;
+  const data = await fetchJson('/api/phrases');
+  phrases = Array.isArray(data) ? data : (data.phrases || []);
   setCaregiverPhrases(phrases);
   setPhrases(phrases);
   renderPhraseList();

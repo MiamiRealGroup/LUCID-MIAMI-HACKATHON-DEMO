@@ -2,12 +2,17 @@
 // cached audio clips at runtime, so the entire AAC board works without
 // a connection.
 
-const CACHE = 'lucid-v1';
+// Bump this whenever ANY cached asset changes. The activate handler deletes
+// every other cache — the only way a browser that already visited stops
+// serving the old CSS/JS.
+const CACHE = 'lucid-v3';
+// URLs must match exactly what index.html requests, including the ?v= query,
+// or the precache misses and the first offline load fails.
 const SHELL = [
   '/',
   '/index.html',
-  '/css/base.css',
-  '/css/grid.css',
+  '/css/base.css?v=3',
+  '/css/grid.css?v=3',
   '/js/main.js',
   '/js/speak.js',
   '/js/board.js',

@@ -54,9 +54,12 @@ export function stop() {
 // primary: prefer cached clip; fall back to local voice. Returns the mode used.
 export async function speak(phrase) {
   stop();
-  if (phrase.audio && phrase.status === 'cached') {
+  // phrase.url is the server-resolved path ("/audio/core/stop.mp3").
+  // phrase.audio is only the relative cache key ("core/stop.mp3").
+  const url = phrase.url || (phrase.audio ? `/audio/${phrase.audio}` : null);
+  if (url && phrase.status === 'cached') {
     try {
-      await playBuffer(phrase.audio);
+      await playBuffer(url);
       return 'cached';
     } catch {
       // fall through to local voice

@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 import { readJson, writeJson } from '../services/store.js';
 import { synthesizeToFile, hasKey, listVoices } from '../services/elevenlabs.js';
 import { atomicWrite, removeAudio } from '../services/cache.js';
-import { audioPathFor, writeManifest } from '../services/manifest.js';
+import { audioPathFor, buildEntries, writeManifest } from '../services/manifest.js';
 import { AUDIO_DIR } from '../paths.js';
 
 const router = Router();
@@ -47,7 +47,8 @@ router.get('/phrases', async (req, res) => {
       }
     })
   );
-  res.json(await writeManifest(phrases, status));
+  // buildEntries is pure: a GET must not write to disk.
+  res.json({ phrases: buildEntries(phrases, status) });
 });
 
 router.post('/phrases', async (req, res) => {

@@ -1,55 +1,70 @@
-/* Fixed button geometry. Positions never reflow, so a button is always
-   where the person last saw it. */
+/* LUCID board layout and visual system.
+   Loaded after base.css, so this file owns LUCID's layout.
 
-.grid {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  padding: 8px 16px;
-  overflow-y: auto;
-  align-content: start;
-}
+   Constraints that must not be broken:
+   - Sensory neutral: muted palette, no gradients, no motion, no decoration.
+   - Predictable: tile geometry is fixed; core tiles never move or reorder.
+   - Fast: STOP is the largest target on screen, always in the same place. */
 
-/* Core grid is the primary surface; keep tiles generous and touch-sized. */
-.tile {
-  min-height: 84px;
+.aac { max-width: 760px; }
+
+/* A flex/grid child defaults to min-width:auto and refuses to shrink below
+   its content. That is what pushes the board wider than a narrow phone and
+   clips the right-hand column, so every direct child opts out. */
+.aac > * { min-width: 0; }
+
+html, body { overflow-x: hidden; }
+
+/* ---------- header ---------- */
+
+.statusbar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 10px 8px;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  word-break: break-word;
+  gap: 10px;
+  padding: 10px 16px 6px;
+  font-size: 13px;
+  color: var(--ink-soft);
 }
 
-.tile-label { font-size: 17px; }
+.statusbar .brand {
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+}
 
-/* Urgent/alert tiles get a subtle, calm emphasis — never flashing. */
-.tile-urgent { background: var(--warn); color: #fff; border-color: var(--warn); }
-.tile-urgent:active { background: #7a4e31; }
+/* Pushed right; names the current place so it is never ambiguous. */
+.statusbar-context {
+  margin-left: auto;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 
-.tile-stop { background: var(--stop); color: #fff; border-color: var(--stop); }
-.tile-stop:active { background: #4a3a51; }
+.statusbar-offline { color: var(--warn); }
 
-.tile-muted { opacity: 0.55; }
+/* ---------- place selector ---------- */
 
+/* Sits above the board: choose the place, then speak. Scrolls horizontally
+   only if a caregiver adds more places than fit. */
 .contextbar {
   display: flex;
   gap: 8px;
-  padding: 4px 16px;
+  padding: 6px 16px 10px;
   overflow-x: auto;
+  scrollbar-width: none;
 }
 
+.contextbar::-webkit-scrollbar { display: none; }
+
 .contextchip {
-  white-space: nowrap;
-  padding: 10px 16px;
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 18px;
   font-size: 15px;
   font-weight: 600;
   border-radius: 999px;
+  background: var(--surface);
+  white-space: nowrap;
 }
 
 .contextchip.active {
@@ -58,19 +73,148 @@
   border-color: var(--accent);
 }
 
-/* Caregiver panel styles live here to keep base.css about the child view. */
+/* ---------- first-run caregiver hint ---------- */
+
+/* Quiet, one line, no motion. A long-press entry point is useless if nobody
+   knows it exists, so it is stated once and then never shown again. */
+.hint {
+  margin: 0 16px 6px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+/* ---------- phrases ---------- */
+
+/* minmax(0, 1fr) rather than 1fr: a bare 1fr is minmax(auto, 1fr), and the
+   auto minimum refuses to shrink below the content's min-content width, which
+   pushes the board wider than a narrow phone and clips the right column. */
+.grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 4px 16px 12px;
+  overflow-y: auto;
+  align-content: start;
+}
+
+/* Every tile is large enough to hit without aiming.
+   min-width: 0 is required: grid items default to min-width:auto and would
+   otherwise refuse to shrink below their content, overflowing the board. */
+.tile {
+  min-width: 0;
+  min-height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px 10px;
+  border-radius: 16px;
+  background: var(--surface);
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+}
+
+.tile-label { font-size: 18px; }
+
+/* STOP is the single most urgent act: full width, largest type, calm plum
+   rather than a harsh red — serious without being alarming. */
+.tile-stop {
+  grid-column: 1 / -1;
+  min-height: 84px;
+  background: var(--stop);
+  color: #fff;
+  border-color: var(--stop);
+}
+
+.tile-stop:active { background: #4a3a51; }
+.tile-stop .tile-label { font-size: 22px; letter-spacing: 0.16em; }
+
+/* Help, hurt and break carry the most weight after STOP. */
+.tile-urgent {
+  background: var(--warn);
+  color: #fff;
+  border-color: var(--warn);
+}
+
+.tile-urgent:active { background: #7a4e31; }
+.tile-urgent .tile-label { font-size: 17px; }
+
+/* A blank board explains nothing. This states what is happening, calmly. */
+.board-empty {
+  grid-column: 1 / -1;
+  margin: 24px 0;
+  text-align: center;
+  font-size: 16px;
+  color: var(--ink-soft);
+}
+
+/* ---------- what was just said ---------- */
+
+.speechstrip {
+  min-height: 68px;
+  margin: 0 16px 8px;
+  padding: 14px 18px;
+  background: var(--surface-2);
+  border-left: 5px solid var(--accent);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+}
+
+.speechstrip-text {
+  font-size: 22px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+/* ---------- repeat / stop ---------- */
+
+.actions {
+  display: flex;
+  gap: 12px;
+  padding: 4px 16px calc(14px + env(safe-area-inset-bottom));
+}
+
+.action {
+  flex: 1;
+  min-height: 60px;
+  font-size: 18px;
+  font-weight: 650;
+  border-radius: 16px;
+}
+
+.action-stop {
+  background: var(--stop);
+  color: #fff;
+  border-color: var(--stop);
+}
+
+.action-stop:active { background: #4a3a51; }
+
+/* Wider screens get a third column in the same reading order. */
+@media (min-width: 620px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ---------- caregiver panel ---------- */
+
 .caregiver {
   position: fixed;
   inset: 0;
   background: var(--bg);
   overflow-y: auto;
   padding: 24px 20px 48px;
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
 }
 
 .caregiver h1 { font-size: 22px; margin: 0 0 4px; }
-.caregiver h2 { font-size: 16px; margin: 24px 0 8px; color: var(--ink-soft); }
 .caregiver .lead { color: var(--ink-soft); margin: 0 0 20px; font-size: 14px; }
 
 .caregiver fieldset {
@@ -80,10 +224,12 @@
   margin: 0 0 16px;
 }
 
+.caregiver legend { font-weight: 600; padding: 0 6px; }
+
 .caregiver label { display: block; font-size: 14px; margin: 12px 0 4px; }
+
 .caregiver select,
-.caregiver input[type="text"],
-.caregiver input[type="range"] {
+.caregiver input[type="text"] {
   width: 100%;
   font-size: 16px;
   padding: 10px;
@@ -129,6 +275,13 @@
 }
 
 .caregiver .phrase-row .ctx { color: var(--ink-soft); font-size: 12px; }
-.caregiver .phrase-row .badge { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); }
+
+.caregiver .phrase-row .badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+
 .caregiver .phrase-row .badge.cached { background: #e3ede4; color: #2f5d35; }
 .caregiver .phrase-row .badge.pending { background: #efe7d8; color: #7a5a1f; }

@@ -1,6 +1,6 @@
-import { initContextBar } from './context.js';
+import { initContextBar, onContextChange } from './context.js';
 import { initCaregiver } from './caregiver.js';
-import { setPhrases } from './board.js';
+import { setPhrases, setActiveContext } from './board.js';
 import { speak, stop } from './speak.js';
 
 let phrases = [];
@@ -16,11 +16,15 @@ function lastText() {
 
 async function loadPhrases() {
   try {
-    const manifest = await (await fetch('/api/phrases')).json();
-    phrases = manifest.phrases;
+    const data = await (await fetch('/api/phrases')).json();
+    // Accept either shape: a bare array, or { phrases: [...] }.
+    phrases = Array.isArray(data) ? data : (data.phrases || []);
     setPhrases(phrases);
-  } catch {
-    // Server unavailable: the service worker may still serve a cached manifest.
+  } catch (err) {
+    // Surface the failure instead of rendering an empty board silently.
+    const strip = document.getElementById('speech-text');
+    if (strip) strip.textContent = 'Could not load phrases';
+    console.error('LUCID: failed to load phrases', err);
   }
 }
 
@@ -29,7 +33,10 @@ async function boot() {
   window.addEventListener('online', updateOffline);
   window.addEventListener('offline', updateOffline);
 
+  // Wire the context change to the board, then paint the initial state.
+  onContextChange((id) => setActiveContext(id));
   initContextBar();
+
   initCaregiver();
 
   const repeat = document.getElementById('btn-repeat');

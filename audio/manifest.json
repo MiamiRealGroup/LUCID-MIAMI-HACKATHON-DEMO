@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-09-19T16:30:04.433Z",
+  "phrases": [
+    {
+      "id": "stop",
+      "text": "STOP",
+      "context": "core",
+      "alert": false,
+      "audio": "core/stop.mp3",
+      "url": "/audio/core/stop.mp3",
+      "status": "cached"
+    }
+  ]
+}
